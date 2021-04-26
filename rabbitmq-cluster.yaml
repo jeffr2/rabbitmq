@@ -1,0 +1,12 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-cluster
+  namespace: rabbitmq
+spec:
+  persistence:
+    storageClassName: managed-nfs-storage
+    storage: 5Gi
+  replicas: 2
+  service:
+    type: NodePort

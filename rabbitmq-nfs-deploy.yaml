@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-client-provisioner
+  namespace: rabbitmq
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: quay.io/external_storage/nfs-client-provisioner:latest
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: uwn.net.br/nfs
+            - name: NFS_SERVER
+              value: nfs.uwn.net.br
+            - name: NFS_PATH
+              value: /var/nfs/dynamic
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: nfs.uwn.net.br
+            path: /var/nfs/dynamic
